@@ -5,7 +5,7 @@ Created on Mon Oct  1 11:16:50 2018
 @author: Gehaha
 """
 import sys
-from SlamCar3 import Ui_MainWindow
+from SlamCar import Ui_MainWindow
 import binascii
 import threading
 import stopThreading
@@ -27,8 +27,9 @@ class SignalLogic(QtWidgets.QMainWindow,Ui_MainWindow):
         self.server_th = None
         self.client_th = None
         self.client_socket_list = list()
-        self.link = False # 用于标记是否开启连接
+        self.link = True # 用于标记是否开启连接
         
+        #信号设置
         self.OpenPort.clicked.connect(self.port_open)
         self.ClosePort.clicked.connect(self.port_close)
         self.CheckpushButton.clicked.connect(self.port_check)
@@ -42,9 +43,8 @@ class SignalLogic(QtWidgets.QMainWindow,Ui_MainWindow):
         self.request_pushButton.clicked.connect(self.tcp_send)
         
         self.connect()
-        
-        
-    def connect(self):
+                
+    def connect(self):       
        # 控件的信号
         self.signal_write_msg.connect(self.write_msg)
     def write_msg(self,msg):
@@ -83,11 +83,8 @@ class SignalLogic(QtWidgets.QMainWindow,Ui_MainWindow):
     def send_data(self):
         #串口接收数据
         if(self.ser.isOpen):          
-            if(self.Hex2_radioButton.isChecked()):
-                self.ser.write(hex(self.SendtextEdit.toPlainText()))             
-                #self.ser.write(binascii.b2a_hqx(self.SendtextEdit.toPlainText()))
-            elif(self.ASCII2_radioButton.isChecked()):                
-                self.ser.write(binascii.a2b_hex(self.SendtextEdit.toPlainText()))                
+            if(self.Hex2_checkBox.isChecked()):
+                self.ser.write(binascii.a2b_hex(self.SendtextEdit.toPlainText()))                    
             else:
                 self.ser.write(self.SendtextEdit.toPlainText().encode('utf-8'))
             self.CheckStaLab.setText("发送成功")
@@ -104,10 +101,8 @@ class SignalLogic(QtWidgets.QMainWindow,Ui_MainWindow):
             size = self.ser.inWaiting()
             if size:
                 res_data = self.ser.read_all()
-                if(self.Hex_radioButton.isChecked()):
+                if(self.Hex1_checkBox.isChecked()):
                     self.RectextEdit.append(binascii.b2a_hex(res_data).decode())             
-                elif(self.ASCII1_radioButton.isChecked()):
-                   self.RectextEdit.append(binascii.b2a_hex(res_data).decode())                                  
                 else:
                     self.RectextEdit.append(res_data.decode())                 
                 self.RectextEdit.moveCursor(QtGui.QTextCursor.End)
@@ -118,7 +113,7 @@ class SignalLogic(QtWidgets.QMainWindow,Ui_MainWindow):
     #发送文件
     def send_file(self):
         if (self.ser.isOpen()):
-            if(self.Hex2_radioButton.isChecked()):
+            if(self.Hex2_checkBox.isChecked()):
                 self.ser.write(binascii.a2b_hex(self.SendtextEdit.toPlainText()))
             else:
                 self.ser.write(self.SendtextEdit.toPlainText().encode('utf-8'))
@@ -144,7 +139,6 @@ class SignalLogic(QtWidgets.QMainWindow,Ui_MainWindow):
             with f:
                 data = f.read()
                 self.SendtextEdit.setText(data)
-                
                 
     #作为客户端端，连接服务器   
     def connect_server(self):
@@ -249,26 +243,27 @@ class SignalLogic(QtWidgets.QMainWindow,Ui_MainWindow):
                 break
     def tcp_send(self):
         #用于TCP服务端和TCP客户端发送消息
-        if self.link is False:
-            msg = '请选择服务，并点击连接网络\n'
-            self.signal_write_msg.emit(msg)
-        else:
-            try:
+        if self.link is True:      
+            try:            
                 send_msg =(str(self.SendtextEdit.toPlainText())).encode('utf-8')
-                if self.Model_comboBox.currentIndex() == 0:
-                    #向所有连接的客户端发送消息
-                    
+                if self.Model_comboBox.currentIndex() == 0:                 
+                    #向所有连接的客户端发送消息                    
                     for client, address in self.client_socket_list:
                         client.send(send_msg)
                     msg = 'TCP服务端已发送\n'
                     self.signal_write_msg.emit(msg) 
-                if self.comboBox_tcp.currentIndex() == 1: 
+                if self.Model_comboBox.currentIndex() == 1:
+                 
                     self.tcp_socket.send(send_msg) 
                     msg = 'TCP客户端已发送\n' 
                     self.signal_write_msg.emit(msg) 
-            except Exception as ret:
+            except Exception as ret:              
                 msg = '发送失败\n' 
                 self.signal_write_msg.emit(msg)
+        else:
+            msg = '请选择服务，并点击连接网络\n'
+            self.signal_write_msg.emit(msg)
+            
     def  tcp_close(self):
         #关闭网络连接的方法
         if self.Model_comboBox.currentIndex() == 0:
@@ -301,7 +296,7 @@ class SignalLogic(QtWidgets.QMainWindow,Ui_MainWindow):
     def get_location(self):        
         #首先要检查出口是否打开
         if(self.ser.isOpen() ):        
-            if(self.Hex2_radioButton.isChecked()):
+            if(self.Hex2_checkBox.isChecked()):
                 self.ser.write(binascii.a2b_hex(self.SendtextEdit.toPlainText('0x10')))
             else:
                 self.ser.write(self.SendtextEdit.toPlainText('0x10').encode('utf-8'))
@@ -311,14 +306,14 @@ class SignalLogic(QtWidgets.QMainWindow,Ui_MainWindow):
             
     def send_message(self):
         if(self.ser.isOpen()):
-            if(self.Hex2_radioButton.isChecked()):
+            if(self.Hex2_checkBox.isChecked()):
                 self.ser.write(binascii.a2b_hex(self.angle_textEdit.toPlainText()))
-                self.ser.write(binascii.a2b_hex(self.Coords_textEdit.toPlainText()))
                 self.ser.write(binascii.a2b_hex(self.speed_textEdit.toPlainText()))
+                self.ser.write(binascii.a2b_hex(self.Coords_textEdit.toPlainText()))
             else:
                 self.ser.write(self.angle_textEdit.toPlainText().encode('utf-8'))
-                self.ser.write(self.Coords_textEdit.toPlainText().encode('utf-8'))
                 self.ser.write(self.speed_textEdit.toPlainText().encode('utf-8'))
+                self.ser.write(self.Coords_textEdit.toPlainText().encode('utf-8'))
             self.CheckLab.setText("发送成功")
         else:
             self.CheckLab.setText("发送失败")
