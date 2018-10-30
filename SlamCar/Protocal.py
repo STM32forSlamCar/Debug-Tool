@@ -25,22 +25,39 @@ CmdId = {
     'STM32_TASK_FINISH'    : 0x7010,
 
 }
+# moduleId + dataId + dataLen + recvLen
+DataHead = [MODULEID, 0x0000, 0x00, 0x00]
 
-class DataHead:
-    def __init__(self):
-        self.__moduleId__ = MODULEID    # fixed for MODULEID  9.24  birthday
-        self.dataId   = 0x0000
-        self.dataLen  = 0x00
-        self.recvLen  = 0x00
+Head_ = DataHead
+byData_ = [0x00000000,0x00000000]
+check_ = 0x0000
 
-class SerialPackage:
-    def __init__(self):
-        self.Head = DataHead()
-        self.byData = []               # data content, max size is 
-        self.check = 0x0000
+SerialPackage = [Head_, byData_, check_]
 
-
-
-# test this class
+# test
 def test():
-    pass
+    pack = SerialPackage
+
+    pack[0][1] = CmdId['DEBUG_QT_COMMOND']  # dataId
+    pack[0][2] = 2                          # dataLen
+    pack[0][3] = 0                          # recvLen
+
+    speed = 1.0
+    angle = 30
+
+    pack[1][0] = speed
+    pack[1][1] = angle
+
+    pack[2] = 0x1234
+    # print("dataId: %X" %SerialPackage[0][1])
+    print("dataId: %X" %pack[0][1])
+    print("speed:",pack[1][0])
+    print("angle:",pack[1][1])
+    print("check: %X" %pack[2])
+
+    # !!!
+    # print(id(SerialPackage))
+    # print(id(pack))
+
+
+# test()
