@@ -1,5 +1,6 @@
 import DataBase
-import SerialPackage
+import Protocal
+from SerialPack import DataPack
 import serial
 
 class Communcate(object):
@@ -31,12 +32,11 @@ class Communcate(object):
     #     # close serial port
 
     def receive(self):
-        SerialPackage = DataPack()
         # TODO
         # serial receive msg to self.__SerialPack
-        SerialPackage = DataPack()
-        if SerialPack.Head.dataId == CmdId['STM32_FEED_BACK'] :
-            self.__updateFeedback(SerialPack.bydata)
+        msg = DataPack()
+        if msg.dataId() == Procal.CmdId['STM32_FEED_BACK'] :
+            self.__updateFeedback(msg)
         else:
             print("dataId error")
 
