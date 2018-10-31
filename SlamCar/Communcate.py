@@ -1,6 +1,5 @@
 import DataBase
-import Protocal
-from SerialPack import DataPack
+import SerialPackage
 import serial
 
 class Communcate(object):
@@ -17,7 +16,7 @@ class Communcate(object):
     def __init__(self):
         if not self.__isFirstInit:
             self.__connectState = False
-            self.__ser = serial.Serial()
+            # self.__ser = serial.Serial()
         else:
             pass
 
@@ -43,9 +42,16 @@ class Communcate(object):
 
     def sendCmd(self):
         db = DataBase()
+        db.cmdMsg = [0.1,20]
         
-        SerialPackage = DataPack(CmdId['DEBUG_QT_COMMOND'])
-        SerialPackage.setDataLen()
+        SerialPackage = DataPack(Protocal.CmdId['DEBUG_QT_COMMOND'])
+        SerialPackage.setLen(len(db.cmdMsg))
+        SerialPackage.setBody(db.cmdMsg)
+        SerialPackage.generateCrc()
+        # print(SerialPackage.dataId())
+
+        print('%x' %SerialPackage.dataId())
+        print('%x' %len(db.cmdMsg))
 
 
 
@@ -54,13 +60,13 @@ class Communcate(object):
 
     # def __write():
 
-    def __updateCmd(data):
-        db = DataBase()
-        db.cmdMsg = data
+    # def __updateCmd(data):
+    #     db = DataBase()
+    #     db.cmdMsg = data
 
-    def __updateFeedback(data):
-        db = DataBase()
-        db.feedbackMsg = data
+    # def __updateFeedback(data):
+    #     db = DataBase()
+    #     db.feedbackMsg = data
 
 
 
@@ -68,10 +74,13 @@ class Communcate(object):
 # test this class
 def test():
     McuCommuncate = Communcate()
-    if McuCommuncate.connect():
-        print("connect sucess")
-    else:
-        print("connect failed")
-        return
+    # if McuCommuncate.connect():
+    #     print("connect sucess")
+    # else:
+    #     print("connect failed")
+    #     return
     
-    McuCommuncate.send()
+    McuCommuncate.sendCmd()
+
+test()
+

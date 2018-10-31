@@ -19,6 +19,8 @@ CmdId = {
     'STM32_TASK_FINISH'    : 0x7010,
 
 }
+# moduleId + dataId + dataLen + recvLen
+DataHead = [MODULEID, 0x0000, 0x00, 0x00]
 
 # fixed for MODULEID  9.24  birthday
 MODULEID = 0x039C    
