@@ -19,11 +19,12 @@ CmdId = {
     'STM32_TASK_FINISH'    : 0x7010,
 
 }
-# moduleId + dataId + dataLen + recvLen
-DataHead = [MODULEID, 0x0000, 0x00, 0x00]
 
 # fixed for MODULEID  9.24  birthday
-MODULEID = 0x039C    
+MODULEID = 0x039C 
+# moduleId + dataId + dataLen + recvLen
+DataHead = [MODULEID, 0x0000, 0x00, 0x00]
+   
 # moduleId + dataId + dataLen + recvLen
 DataHead = [MODULEID, 0x0000, 0x00, 0x00]
 
@@ -41,11 +42,12 @@ def test():
     pack[0][2] = 2                          # dataLen
     pack[0][3] = 0                          # recvLen
 
-    speed = 1.0
-    angle = 30
+    # x100
+    speed = 110  
+    angle = 300  
 
-    pack[1][0] = speed
-    pack[1][1] = angle
+    pack[1][0] = int(speed)
+    pack[1][1] = int(angle)
 
     pack[2] = 0x1234
     # print("dataId: %X" %SerialPackage[0][1])

@@ -15,58 +15,36 @@ class Communcate(object):
 
     def __init__(self):
         if not self.__isFirstInit:
-            self.__connectState = False
-            # self.__ser = serial.Serial()
+            # self.__connectState = False
+            self.__ser = serial.Serial()
         else:
             pass
 
-    # def connect(self):
-    #     # TODO 
-    #     # open port ttyUSB0 115200bps
-    #     # success return true
-    #     # faild return false
+    def connect(self):
+        # TODO 
+        # open port ttyUSB0 115200bp
+        # success return true
+        # faild return false
 
     # def close(self):
-    #     # TODO 
-    #     # close serial port
+        # TODO 
+        # close serial port
 
-    def receive(self):
+
+    # omit a single 
+    def receive(msg):
         # TODO
         # serial receive msg to self.__SerialPack
-        msg = DataPack()
-        if msg.dataId() == Procal.CmdId['STM32_FEED_BACK'] :
-            self.__updateFeedback(msg)
-        else:
-            print("dataId error")
-
-
-    def sendCmd(self):
-        db = DataBase()
-        db.cmdMsg = [0.1,20]
-        
-        SerialPackage = DataPack(Protocal.CmdId['DEBUG_QT_COMMOND'])
-        SerialPackage.setLen(len(db.cmdMsg))
-        SerialPackage.setBody(db.cmdMsg)
-        SerialPackage.generateCrc()
-        # print(SerialPackage.dataId())
-
-        print('%x' %SerialPackage.dataId())
-        print('%x' %len(db.cmdMsg))
 
 
 
+    def sendCmd(msg):
+        # self.__ser.send()
 
     # def __read():
 
     # def __write():
 
-    # def __updateCmd(data):
-    #     db = DataBase()
-    #     db.cmdMsg = data
-
-    # def __updateFeedback(data):
-    #     db = DataBase()
-    #     db.feedbackMsg = data
 
 
 
@@ -83,4 +61,3 @@ def test():
     McuCommuncate.sendCmd()
 
 test()
-

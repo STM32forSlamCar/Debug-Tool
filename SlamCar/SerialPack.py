@@ -36,19 +36,23 @@ class DataPack():
     def size():
         return HEADER_BYTESIZE + BODY_MAX_BYTESIZE + CRC_BYTESIZE
 
-    # def generateCrc(self):
-    #     crc = self.__crcVerify(self.__msg)
-    #     self.__msg[2] = crc
+    def generateCrc(self):
+        crc = self.__crcVerify()
+        self.__msg[2] = crc
+        print("crc: ",crc)
 
-    # def checkCrc(self):
-    #     crc = self.__crcVerify(self.__msg)
-    #     return self.__msg[2] == crc
+    def checkCrc(self):
+        crc = self.__crcVerify()
+        return self.__msg[2] == crc
 
-    # def __crcVerify(self.__msg): 
-    #     wCrc = 0
-
-    #     return wCrc
-
+    def __crcVerify(self): 
+        crc = 0
+        for i in self.__msg[0]:
+            crc += i
+        
+        for i in self.__msg[1]:
+            crc += i
+        return crc
 
 
 
@@ -63,10 +67,16 @@ def test():
 
     msg.setDataId(Protocal.CmdId['DEBUG_TEST_COMMOND'])
     msg.setLen(2)
-    msg.setBody([1.1, 20])
+    msg.setBody([110, 200])
+    msg.generateCrc()
     print("dataId: %X" %msg.dataId())
     print("dataLen: %X" %msg.len())
     print("body:", msg.body())
 
+    msgTest = msg
+    # msgTest.setBody([111, 200])
+    print(msgTest.checkCrc())
 
-# test()
+
+
+test()
