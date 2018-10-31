@@ -1,7 +1,7 @@
 
 
 class DataBase(object):
-    """robot database"""
+    """robot database: cmdMsg  feedbackMsg"""
     __instance = None
     __isFirstInit = False
 

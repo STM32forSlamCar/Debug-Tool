@@ -28,7 +28,7 @@ class DataPack():
         return self.__msg[0][2]
 
     def data(self):
-        return self.__msg
+        return self.__msg.data()
 
     def body(self):
         return self.__msg[1]
