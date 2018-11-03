@@ -1,5 +1,3 @@
-import DataBase
-import SerialPackage
 import serial
 
 class Communcate(object):
@@ -20,44 +18,64 @@ class Communcate(object):
         else:
             pass
 
+    def  __del__(self):
+        self.__ser.close()
+
     def connect(self):
-        # TODO 
+        self.__ser.baudrate = 115200
+        self.__ser.port = "/dev/ttyUSB0"
+        self.__ser.bytesize = serial.EIGHTBITS
+        self.__ser.stopbits = serial.STOPBITS_ONE
+        self.__ser.parity =  serial.PARITY_NONE
+        self.__ser.open()
+        if(self.__ser.isOpen()):
+            print("open serial success")
+            return True
+        else:
+            print("open serial faild !!!")
+            return False  
         # open port ttyUSB0 115200bp
         # success return true
         # faild return false
 
-    # def close(self):
+    def close(self):
         # TODO 
-        # close serial port
-
-
+        # close serial portrint
+        self.__ser.close()
+    
     # omit a single 
-    def receive(msg):
+    def receive(self):
         # TODO
-        # serial receive msg to self.__SerialPack
-
-
-
-    def sendCmd(msg):
-        # self.__ser.send()
+        res_data = ()
+        while(self.__ser.isOpen()):
+            size = self.__ser.inWaiting()
+            if size:
+                # print(size) 
+                res_data = self.__ser.read_all()
+                # print("%X" %res_data[2])
+                # print("%X" %res_data[3])
+                return res_data
+                self.__ser.flushInput()
+            
+    def send(msg):
+     # self.__ser.send()
+        self.__ser.write(msg)
 
     # def __read():
 
+
     # def __write():
-
-
-
 
  
 # test this class
 def test():
     McuCommuncate = Communcate()
-    # if McuCommuncate.connect():
-    #     print("connect sucess")
-    # else:
-    #     print("connect failed")
-    #     return
-    
-    McuCommuncate.sendCmd()
+    McuCommuncate.connect()
+
+    while True:
+        msg = McuCommuncate.receive()
+        # for i in msg:
+            # print("%X" %i)
+
 
 test()

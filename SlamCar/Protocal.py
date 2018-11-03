@@ -24,9 +24,6 @@ CmdId = {
 MODULEID = 0x039C 
 # moduleId + dataId + dataLen + recvLen
 DataHead = [MODULEID, 0x0000, 0x00, 0x00]
-   
-# moduleId + dataId + dataLen + recvLen
-DataHead = [MODULEID, 0x0000, 0x00, 0x00]
 
 Head_ = DataHead
 byData_ = [0x00000000,0x00000000]
