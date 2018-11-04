@@ -18,8 +18,6 @@ class DataBase(object):
         else:
             pass
 
-
-
 # test this class
 def test():
     db1 = DataBase()

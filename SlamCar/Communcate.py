@@ -1,5 +1,8 @@
 import serial
-
+from SerialPack import DataPack
+import DataBase
+import struct
+import time
 class Communcate(object):
     """communcate with mcu"""
 
@@ -34,18 +37,22 @@ class Communcate(object):
         else:
             print("open serial faild !!!")
             return False  
-        # open port ttyUSB0 115200bp
-        # success return true
-        # faild return false
 
     def close(self):
-        # TODO 
-        # close serial portrint
         self.__ser.close()
     
     # omit a single 
     def receive(self):
-        # TODO
+        data = self.__read()
+        print("receive data", data)
+        msg = DataPack()
+        msg.setData(data)
+        return msg
+
+    def send(self, msg):
+        self.__write(msg.data()) 
+
+    def __read(self):
         res_data = ()
         while(self.__ser.isOpen()):
             size = self.__ser.inWaiting()
@@ -56,26 +63,33 @@ class Communcate(object):
                 # print("%X" %res_data[3])
                 return res_data
                 self.__ser.flushInput()
-            
-    def send(msg):
-     # self.__ser.send()
-        self.__ser.write(msg)
 
-    # def __read():
-
-
-    # def __write():
-
+    def __write(self, data):
+        self.__ser.write(data)
  
+# def receive():
+    #  while True:
+        # msg = McuCommuncate.receive()
+        # print(msg)
+
 # test this class
 def test():
+    data = [0x9c,0x03,0x10,0x50,0x08,0x10,0x20,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x07,0x01]
+    msg = DataPack() 
+    msg.setData(data)
     McuCommuncate = Communcate()
-    McuCommuncate.connect()
 
+    if not McuCommuncate.connect():
+        print("faile")
     while True:
-        msg = McuCommuncate.receive()
-        # for i in msg:
-            # print("%X" %i)
+        McuCommuncate.send(msg)
+        time.sleep(1)
+    # msg = McuCommuncate.receive()
+    # print(msg.data())
 
+
+    
 
 test()
+
+

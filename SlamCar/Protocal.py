@@ -20,14 +20,20 @@ CmdId = {
 
 }
 
+HeadSize = 6
+CrcSize = 2
+
 # fixed for MODULEID  9.24  birthday
-MODULEID = 0x039C 
+MODULEID = [0x03,0x9C] 
+DATAID = [0x00,0x00]
+DATALEN = [0x00]
+DATARECLEN = [0x00]
 # moduleId + dataId + dataLen + recvLen
-DataHead = [MODULEID, 0x0000, 0x00, 0x00]
+DataHead = [MODULEID, DATAID, DATALEN, DATARECLEN]
 
 Head_ = DataHead
-byData_ = [0x00000000,0x00000000]
-check_ = 0x0000
+byData_ = [0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00]
+check_ = [0x00,0x00]
 
 SerialPackage = [Head_, byData_, check_]
 
